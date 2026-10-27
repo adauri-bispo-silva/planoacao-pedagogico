@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PlanoAção Pedagógico - Gerador de Plano de Aula</title>
+  <title>PlanoAção Pedagógico - Gerador Completo de Plano de Aula</title>
   <style>
     /* ESTILOS CSS GERAIS (100% EMBUTIDOS - ZERO DEPENDÊNCIAS EXTERNAS) */
     :root {
@@ -40,7 +40,7 @@
 
     #app-container {
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       background-color: var(--bg-card);
       min-height: 100vh;
       display: flex;
@@ -49,6 +49,7 @@
       position: relative;
     }
 
+    /* Cabeçalho Fixo */
     header {
       background-color: var(--primary);
       color: white;
@@ -92,6 +93,7 @@
       background-color: rgba(255, 255, 255, 0.25);
     }
 
+    /* Navegação por Abas */
     nav.tabs-nav {
       display: flex;
       background-color: #f8fafc;
@@ -124,6 +126,7 @@
       background-color: white;
     }
 
+    /* Conteúdo Principal */
     main.content-area {
       padding: 16px;
       flex: 1;
@@ -137,6 +140,7 @@
       display: block;
     }
 
+    /* Banner Informativo */
     .info-banner {
       background-color: var(--primary-light);
       border: 1px solid #c7d2fe;
@@ -150,6 +154,7 @@
       align-items: flex-start;
     }
 
+    /* Cards do Formulário */
     .form-group-card {
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
@@ -201,7 +206,7 @@
       font-weight: 600;
       color: #334155;
       margin-bottom: 4px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
     .input-subtext {
@@ -229,7 +234,7 @@
 
     textarea {
       resize: vertical;
-      min-height: 70px;
+      min-height: 65px;
     }
 
     .grid-2-cols {
@@ -238,6 +243,36 @@
       gap: 10px;
     }
 
+    /* Sub-caixas de Dimensões */
+    .dimension-box {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 3.5px solid var(--primary);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .dimension-box.procedimental {
+      border-left-color: #0284c7;
+    }
+
+    .dimension-box.atitudinal {
+      border-left-color: #059669;
+    }
+
+    .dimension-box-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Assistente de Verbos */
     .verb-assistant {
       background-color: #eef2ff;
       border: 1px solid #c7d2fe;
@@ -277,6 +312,7 @@
       color: white;
     }
 
+    /* Botão Principal de Ação */
     .btn-action-primary {
       width: 100%;
       padding: 14px;
@@ -300,6 +336,7 @@
       background-color: var(--primary-dark);
     }
 
+    /* Barra de Ações Rápidas */
     .action-bar-plano {
       background-color: #1e293b;
       color: white;
@@ -337,6 +374,7 @@
       background-color: var(--accent-dark);
     }
 
+    /* Visualização do Documento */
     .document-preview {
       background-color: white;
       border: 1px solid #cbd5e1;
@@ -386,6 +424,20 @@
       text-align: justify;
     }
 
+    .doc-subgroup {
+      margin-top: 6px;
+      margin-bottom: 8px;
+      padding-left: 10px;
+      border-left: 3px solid var(--primary-light);
+    }
+
+    .doc-subgroup-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    /* Modais */
     .modal-backdrop {
       position: fixed;
       top: 0;
@@ -407,7 +459,7 @@
     .modal-card {
       background-color: white;
       border-radius: 16px;
-      max-width: 400px;
+      max-width: 420px;
       width: 100%;
       padding: 20px;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
@@ -469,7 +521,7 @@
       color: var(--primary);
     }
 
-    /* REGRAS DE IMPRESSÃO ABNT (NBR 14724)
+    /* REGRAS DE IMPRESSÃO ABNT (NBR 14724 / NBR 6023)
        Papel A4 | Margens: superior 3 cm, esquerda 3 cm, inferior 2 cm, direita 2 cm
        Fonte 12 pt | Espaçamento 1,5 | Recuo de parágrafo 1,25 cm
        As margens são definidas em @page, por isso valem em TODAS as páginas. */
@@ -581,6 +633,22 @@
         widows: 2;
       }
 
+      /* Subdivisões (dimensões, momentos, critérios) sem enfeites na impressão */
+      .doc-subgroup {
+        border-left: none !important;
+        padding-left: 0 !important;
+        margin-top: 0.5em !important;
+        margin-bottom: 0.5em !important;
+      }
+
+      .doc-subgroup-title {
+        font-size: 12pt !important;
+        font-weight: 700 !important;
+        text-indent: 0 !important;
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+
       /* Remove o visual do "Modo Edição Direta" na impressão */
       [contenteditable] {
         border: none !important;
@@ -626,16 +694,18 @@
 
     <main class="content-area">
 
+      <!-- ABA 1: INSUMOS -->
       <section id="tab-insumos" class="tab-content active no-print">
         
         <div class="info-banner">
           <span style="font-size: 1.2rem;">💡</span>
-          <div>Responda às questões organizadas para estruturar um plano de aula reflexivo e fundamentado na Didática Crítica (Paulo Freire, Luckesi, Pimenta e Leal).</div>
+          <div>Responda às questões organizadas para estruturar um plano de aula reflexivo, com discriminação das dimensões da aprendizagem e fundamentado na Didática Crítica.</div>
         </div>
 
+        <!-- Bloco 1: Identificação & Eixo Temático -->
         <fieldset class="form-group-card">
           <div class="card-header-flex">
-            <span class="card-title">📌 1. Cabeçalho Institucional</span>
+            <span class="card-title">📌 1. Cabeçalho Institucional & Eixo</span>
           </div>
 
           <label class="input-label">Instituição de Ensino</label>
@@ -662,17 +732,22 @@
               <input type="text" id="form-duracao" oninput="salvarDados()" placeholder="Ex: 2h/aula - 27/10">
             </div>
           </div>
+
+          <label class="input-label">Eixo Temático / Ementa da Disciplina</label>
+          <input type="text" id="form-eixoTematico" oninput="salvarDados()" placeholder="Ex: Unidade 2 - O Planejamento de Ensino como Práxis">
         </fieldset>
 
+        <!-- Bloco 2: Diagnóstico ("Leitura de Mundo") -->
         <fieldset class="form-group-card">
           <div class="card-header-flex">
             <span class="card-title">👥 2. Diagnóstico & Contexto</span>
             <button onclick="abrirModal('diagnostico')" class="btn-info-modal">❓ Mais Informações</button>
           </div>
-          <div class="input-subtext">Qual o perfil sociocultural dos estudantes e quais saberes de experiência prévios eles trazem?</div>
-          <textarea id="form-diagnostico" oninput="salvarDados()" placeholder="Descreva o contexto dos alunos, suas vivências comunitárias e necessidades de apoio pedagógico..."></textarea>
+          <div class="input-subtext">Qual o perfil sociocultural dos estudantes e quais saberes de experiência prévios eles trazem? (Paulo Freire)</div>
+          <textarea id="form-diagnostico" oninput="salvarDados()" placeholder="Descreva o contexto dos alunos, suas vivências comunitárias, interesses e necessidades de apoio pedagógico..."></textarea>
         </fieldset>
 
+        <!-- Bloco 3: Objetivos de Aprendizagem (3 Dimensões) -->
         <fieldset class="form-group-card">
           <div class="card-header-flex">
             <span class="card-title">🎯 3. Objetivos de Aprendizagem</span>
@@ -682,74 +757,151 @@
           <label class="input-label">Objetivo Geral (Longo Prazo)</label>
           <input type="text" id="form-objetivoGeral" oninput="salvarDados()" placeholder="Ex: Compreender o planejamento de ensino como ato político-pedagógico...">
 
-          <label class="input-label">Objetivos Específicos (Com Verbos Ativos no Infinitivo)</label>
-          
-          <div class="verb-assistant">
-            <span class="verb-assistant-title">Assistente de Verbos no Infinitivo (Clique para inserir):</span>
-            <div class="verb-chips">
-              <span class="verb-chip" onclick="inserirVerbo('Analisar')">+ Analisar</span>
-              <span class="verb-chip" onclick="inserirVerbo('Compreender')">+ Compreender</span>
-              <span class="verb-chip" onclick="inserirVerbo('Refletir')">+ Refletir</span>
-              <span class="verb-chip" onclick="inserirVerbo('Formular')">+ Formular</span>
-              <span class="verb-chip" onclick="inserirVerbo('Investigar')">+ Investigar</span>
-              <span class="verb-chip" onclick="inserirVerbo('Sintetizar')">+ Sintetizar</span>
-              <span class="verb-chip" onclick="inserirVerbo('Debater')">+ Debater</span>
-              <span class="verb-chip" onclick="inserirVerbo('Valorizar')">+ Valorizar</span>
+          <label class="input-label" style="font-weight:700; color:var(--primary-dark);">Objetivos Específicos por Dimensão (Prof. Paulo Gomes Lima):</label>
+
+          <!-- Dimensão Conceitual -->
+          <div class="dimension-box">
+            <div class="dimension-box-title">🧠 A) Dimensão Conceitual (Saber)</div>
+            <div class="verb-assistant">
+              <span class="verb-assistant-title">Assistente de Verbos Conceituais:</span>
+              <div class="verb-chips">
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objConceitual', 'Analisar')">+ Analisar</span>
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objConceitual', 'Compreender')">+ Compreender</span>
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objConceitual', 'Conceituar')">+ Conceituar</span>
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objConceitual', 'Sintetizar')">+ Sintetizar</span>
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objConceitual', 'Identificar')">+ Identificar</span>
+              </div>
             </div>
+            <textarea id="form-objConceitual" oninput="salvarDados()" placeholder="Ex: - Analisar as etapas constitutivas do plano de aula;"></textarea>
           </div>
 
-          <textarea id="form-objetivosEspecificos" oninput="salvarDados()" placeholder="Ex: - Analisar as etapas do plano de ensino;&#10;- Refletir sobre a avaliação formativa;"></textarea>
+          <!-- Dimensão Procedimental -->
+          <div class="dimension-box procedimental">
+            <div class="dimension-box-title" style="color:#0369a1;">🛠️ B) Dimensão Procedimental (Saber Fazer)</div>
+            <div class="verb-assistant">
+              <span class="verb-assistant-title">Assistente de Verbos Procedimentais:</span>
+              <div class="verb-chips">
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objProcedimental', 'Formular')">+ Formular</span>
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objProcedimental', 'Elaborar')">+ Elaborar</span>
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objProcedimental', 'Construir')">+ Construir</span>
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objProcedimental', 'Investigar')">+ Investigar</span>
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objProcedimental', 'Aplicar')">+ Aplicar</span>
+              </div>
+            </div>
+            <textarea id="form-objProcedimental" oninput="salvarDados()" placeholder="Ex: - Formular plano de aula alinhado à realidade da turma;"></textarea>
+          </div>
+
+          <!-- Dimensão Atitudinal -->
+          <div class="dimension-box atitudinal">
+            <div class="dimension-box-title" style="color:#047857;">❤️ C) Dimensão Atitudinal (Ser / Conviver)</div>
+            <div class="verb-assistant">
+              <span class="verb-assistant-title">Assistente de Verbos Atitudinais:</span>
+              <div class="verb-chips">
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objAtitudinal', 'Refletir')">+ Refletir</span>
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objAtitudinal', 'Valorizar')">+ Valorizar</span>
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objAtitudinal', 'Debater')">+ Debater</span>
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objAtitudinal', 'Respeitar')">+ Respeitar</span>
+                <span class="verb-chip" onclick="inserirVerboCampo('form-objAtitudinal', 'Colaborar')">+ Colaborar</span>
+              </div>
+            </div>
+            <textarea id="form-objAtitudinal" oninput="salvarDados()" placeholder="Ex: - Valorizar o diálogo e o respeito à autonomia dos estudantes;"></textarea>
+          </div>
         </fieldset>
 
+        <!-- Bloco 4: Conteúdos Programáticos (Dimensionalizados) -->
         <fieldset class="form-group-card">
           <div class="card-header-flex">
             <span class="card-title">📚 4. Conteúdos Programáticos</span>
             <button onclick="abrirModal('conteudos')" class="btn-info-modal">❓ Mais Informações</button>
           </div>
-          <div class="input-subtext">Saberes conceituais, procedimentais e atitudinais (ética, cidadania, direitos humanos).</div>
-          <textarea id="form-conteudos" oninput="salvarDados()" placeholder="Ex: 1. O papel da Didática Crítica;&#10;2. Etapas do Planejamento;&#10;3. Ética e Autonomia na docência."></textarea>
+          <div class="input-subtext">Discrimine os saberes conceituais, procedimentais e atitudinais (ética, cidadania) a serem trabalhados (Luckesi).</div>
+          
+          <label class="input-label">Saberes Conceituais (Conceitos & Teorias)</label>
+          <textarea id="form-conteudoConceitual" oninput="salvarDados()" placeholder="Ex: 1. Conceito de Didática Crítica; 2. Etapas do Planejamento;"></textarea>
+
+          <label class="input-label">Saberes Procedimentais (Métodos & Aplicação)</label>
+          <textarea id="form-conteudoProcedimental" oninput="salvarDados()" placeholder="Ex: 1. Técnica de elaboração de objetivos com a taxonomia de verbos;"></textarea>
+
+          <label class="input-label">Saberes Atitudinais (Valores, Ética & Cidadania)</label>
+          <textarea id="form-conteudoAtitudinal" oninput="salvarDados()" placeholder="Ex: 1. Ética e postura dialógica na relação professor-aluno;"></textarea>
         </fieldset>
 
+        <!-- Bloco 5: Encaminhamentos Metodológicos & Gestão do Tempo -->
         <fieldset class="form-group-card">
           <div class="card-header-flex">
-            <span class="card-title">🗺️ 5. Encaminhamentos Metodológicos</span>
+            <span class="card-title">🗺️ 5. Práxis Dialógica & Tempo</span>
             <button onclick="abrirModal('metodologia')" class="btn-info-modal">❓ Mais Informações</button>
           </div>
-          <div class="input-subtext">Sequência didática: Sensibilização/Problematização, Construção Dialógica, Prática Colaborativa e Síntese.</div>
-          <textarea id="form-metodologia" oninput="salvarDados()" placeholder="Ex: 1. Abertura com pergunta provocadora no quadro;&#10;2. Leitura orientada e discussão em pequenos grupos;&#10;3. Roda de conversa para síntese coletiva."></textarea>
+          <div class="input-subtext">Detalhe os 4 momentos didáticos indicando a estimativa de tempo [min] para cada fase (Pimenta & Freire).</div>
+
+          <label class="input-label">1. Sensibilização & Problematização [Tempo min]</label>
+          <textarea id="form-metodoMomento1" oninput="salvarDados()" placeholder="Ex: [15 min] Pergunta provocadora sobre a experiência prévia dos alunos..."></textarea>
+
+          <label class="input-label">2. Construção Dialógica [Tempo min]</label>
+          <textarea id="form-metodoMomento2" oninput="salvarDados()" placeholder="Ex: [40 min] Exposição dialogada e leitura orientada de trecho de Paulo Freire..."></textarea>
+
+          <label class="input-label">3. Prática Colaborativa em Grupos [Tempo min]</label>
+          <textarea id="form-metodoMomento3" oninput="salvarDados()" placeholder="Ex: [35 min] Estudo de caso em pequenos grupos para elaborar objetivos específicos..."></textarea>
+
+          <label class="input-label">4. Síntese & Fechamento [Tempo min]</label>
+          <textarea id="form-metodoMomento4" oninput="salvarDados()" placeholder="Ex: [20 min] Roda de conversa para compartilhamento dos grupos e síntese final..."></textarea>
         </fieldset>
 
+        <!-- Bloco 6: Recursos, NTIC & Anexos -->
         <fieldset class="form-group-card">
           <div class="card-header-flex">
-            <span class="card-title">🖥️ 6. Recursos Didáticos & NTIC</span>
+            <span class="card-title">🖥️ 6. Recursos, NTIC & Anexos</span>
             <button onclick="abrirModal('recursos')" class="btn-info-modal">❓ Mais Informações</button>
           </div>
+
+          <label class="input-label">Recursos Didáticos & Mídias Tecnológicas</label>
           <input type="text" id="form-recursos" oninput="salvarDados()" placeholder="Ex: Quadro interativo, textos impressos, projeção, celulares para pesquisa...">
+
+          <label class="input-label">Anexos / Materiais de Apoio</label>
+          <input type="text" id="form-anexos" oninput="salvarDados()" placeholder="Ex: Anexo A - Roteiro de Estudo de Caso; Anexo B - Ficha de Grupo;">
         </fieldset>
 
+        <!-- Bloco 7: Avaliação Diagnóstica e Formativa -->
         <fieldset class="form-group-card">
           <div class="card-header-flex">
-            <span class="card-title">📝 7. Avaliação Diagnóstica e Formativa</span>
+            <span class="card-title">📝 7. Avaliação Diagnóstica & Formativa</span>
             <button onclick="abrirModal('avaliacao')" class="btn-info-modal">❓ Mais Informações</button>
           </div>
-          <div class="input-subtext">Critérios de acompanhamento amoroso, inclusivo e não punitivo para superar dificuldades.</div>
-          <textarea id="form-avaliacao" oninput="salvarDados()" placeholder="Ex: Observação participante da interação nos grupos e análise da síntese reflexiva manuscrita..."></textarea>
+          <div class="input-subtext">Defina a avaliação como acompanhamento inclusivo, sem caráter punitivo (Luckesi & Vasconcelos).</div>
+
+          <label class="input-label">Critérios Avaliativos (O que será observado nas 3 dimensões)</label>
+          <textarea id="form-avaliacaoCriterios" oninput="salvarDados()" placeholder="Ex: Domínio conceitual das etapas; Capacidade de trabalhar em equipe; Postura reflexiva e respeitosa..."></textarea>
+
+          <label class="input-label">Instrumentos Avaliativos (Com o que será avaliado)</label>
+          <textarea id="form-avaliacaoInstrumentos" oninput="salvarDados()" placeholder="Ex: Observação participante da interação nos grupos, diário de bordo e síntese reflexiva..."></textarea>
         </fieldset>
 
+        <!-- Bloco 8: Diário de Bordo Pós-Aula (Professor Reflexivo) -->
         <fieldset class="form-group-card">
           <div class="card-header-flex">
-            <span class="card-title">📖 8. Referências Bibliográficas</span>
+            <span class="card-title">📓 8. Registro Reflexivo Pós-Aula</span>
+            <button onclick="abrirModal('diario')" class="btn-info-modal">❓ Mais Informações</button>
+          </div>
+          <div class="input-subtext">Espaço reservado para o 'Professor Reflexivo' registrar percepções após a regência (Pimenta & Schön).</div>
+          <textarea id="form-diarioBordo" oninput="salvarDados()" placeholder="Preencher após a aula: O que funcionou bem? Quais dúvidas surgiram na turma? O que precisa ser retomado na próxima aula?"></textarea>
+        </fieldset>
+
+        <!-- Bloco 9: Referências -->
+        <fieldset class="form-group-card">
+          <div class="card-header-flex">
+            <span class="card-title">📖 9. Referências Bibliográficas</span>
           </div>
           <textarea id="form-referencias" oninput="salvarDados()" placeholder="Ex: FREIRE, Paulo. Pedagogia da Autonomia: saberes necessários à prática educativa. Rio de Janeiro: Paz e Terra, 1996."></textarea>
         </fieldset>
 
         <button onclick="mudarAba('plano')" class="btn-action-primary">
-          <span>Gerar e Visualizar Plano de Aula</span>
+          <span>Gerar e Visualizar Plano de Aula Completo</span>
           <span>➔</span>
         </button>
 
       </section>
 
+      <!-- ABA 2: PLANO DE AULA (VISUALIZAÇÃO ABNT) -->
       <section id="tab-plano" class="tab-content">
         
         <div class="action-bar-plano no-print">
@@ -778,6 +930,7 @@
             <div><strong>Turma:</strong> <span id="view-turma">Não informada</span></div>
             <div><strong>Duração/Data:</strong> <span id="view-duracao">Não informada</span></div>
             <div><strong>Componente:</strong> <span id="view-disciplina">Não informado</span></div>
+            <div style="grid-column: span 2;"><strong>Eixo Temático / Ementa:</strong> <span id="view-eixoTematico">Não informado</span></div>
           </div>
 
           <div class="doc-section">
@@ -787,37 +940,95 @@
 
           <div class="doc-section">
             <div class="doc-section-title">2. OBJETIVOS DE APRENDIZAGEM</div>
-            <div style="margin-bottom: 6px;" class="doc-content-text">
+            <div style="margin-bottom: 8px;" class="doc-content-text">
               <strong>Objetivo Geral:</strong> <span id="view-objetivoGeral">Não especificado.</span>
             </div>
+            
             <div class="doc-content-text">
-              <strong>Objetivos Específicos:</strong>
-              <div id="view-objetivosEspecificos" style="margin-top: 4px;">Não especificados.</div>
+              <strong>Objetivos Específicos por Dimensão:</strong>
+              
+              <div class="doc-subgroup">
+                <div class="doc-subgroup-title">A) Dimensão Conceitual (Saber):</div>
+                <div id="view-objConceitual">Não informado.</div>
+              </div>
+
+              <div class="doc-subgroup">
+                <div class="doc-subgroup-title">B) Dimensão Procedimental (Saber Fazer):</div>
+                <div id="view-objProcedimental">Não informado.</div>
+              </div>
+
+              <div class="doc-subgroup">
+                <div class="doc-subgroup-title">C) Dimensão Atitudinal (Ser / Conviver):</div>
+                <div id="view-objAtitudinal">Não informado.</div>
+              </div>
             </div>
           </div>
 
           <div class="doc-section">
             <div class="doc-section-title">3. CONTEÚDOS PROGRAMÁTICOS</div>
-            <div id="view-conteudos" class="doc-content-text">Nenhum conteúdo informado.</div>
+            <div class="doc-subgroup">
+              <div class="doc-subgroup-title">Saberes Conceituais:</div>
+              <div id="view-conteudoConceitual" class="doc-content-text">Não informado.</div>
+            </div>
+            <div class="doc-subgroup">
+              <div class="doc-subgroup-title">Saberes Procedimentais:</div>
+              <div id="view-conteudoProcedimental" class="doc-content-text">Não informado.</div>
+            </div>
+            <div class="doc-subgroup">
+              <div class="doc-subgroup-title">Saberes Atitudinais:</div>
+              <div id="view-conteudoAtitudinal" class="doc-content-text">Não informado.</div>
+            </div>
           </div>
 
           <div class="doc-section">
-            <div class="doc-section-title">4. ENCAMINHAMENTOS METODOLÓGICOS</div>
-            <div id="view-metodologia" class="doc-content-text">Nenhuma metodologia informada.</div>
+            <div class="doc-section-title">4. ENCAMINHAMENTOS METODOLÓGICOS (PRÁXIS DIALÓGICA)</div>
+            <div class="doc-subgroup">
+              <div class="doc-subgroup-title">1. Sensibilização & Problematização:</div>
+              <div id="view-metodoMomento1" class="doc-content-text">Não informado.</div>
+            </div>
+            <div class="doc-subgroup">
+              <div class="doc-subgroup-title">2. Construção Dialógica:</div>
+              <div id="view-metodoMomento2" class="doc-content-text">Não informado.</div>
+            </div>
+            <div class="doc-subgroup">
+              <div class="doc-subgroup-title">3. Prática Colaborativa em Grupos:</div>
+              <div id="view-metodoMomento3" class="doc-content-text">Não informado.</div>
+            </div>
+            <div class="doc-subgroup">
+              <div class="doc-subgroup-title">4. Síntese & Fechamento:</div>
+              <div id="view-metodoMomento4" class="doc-content-text">Não informado.</div>
+            </div>
           </div>
 
           <div class="doc-section">
-            <div class="doc-section-title">5. RECURSOS DIDÁTICOS</div>
-            <div id="view-recursos" class="doc-content-text">Nenhum recurso informado.</div>
+            <div class="doc-section-title">5. RECURSOS DIDÁTICOS, NTIC & ANEXOS</div>
+            <div class="doc-content-text">
+              <strong>Recursos Didáticos & Tecnologias:</strong> <span id="view-recursos">Não informados.</span>
+            </div>
+            <div class="doc-content-text" style="margin-top: 4px;">
+              <strong>Anexos / Materiais de Apoio:</strong> <span id="view-anexos">Não informados.</span>
+            </div>
           </div>
 
           <div class="doc-section">
             <div class="doc-section-title">6. AVALIAÇÃO DIAGNÓSTICA E FORMATIVA</div>
-            <div id="view-avaliacao" class="doc-content-text">Nenhum critério de avaliação informado.</div>
+            <div class="doc-subgroup">
+              <div class="doc-subgroup-title">Critérios de Avaliação:</div>
+              <div id="view-avaliacaoCriterios" class="doc-content-text">Não informados.</div>
+            </div>
+            <div class="doc-subgroup">
+              <div class="doc-subgroup-title">Instrumentos de Avaliação:</div>
+              <div id="view-avaliacaoInstrumentos" class="doc-content-text">Não informados.</div>
+            </div>
           </div>
 
           <div class="doc-section">
-            <div class="doc-section-title">7. REFERÊNCIAS BIBLIOGRÁFICAS</div>
+            <div class="doc-section-title">7. REGISTRO REFLEXIVO PÓS-AULA (DIÁRIO DE BORDO)</div>
+            <div id="view-diarioBordo" class="doc-content-text">A ser preenchido pelo docente após a regência.</div>
+          </div>
+
+          <div class="doc-section">
+            <div class="doc-section-title">8. REFERÊNCIAS BIBLIOGRÁFICAS</div>
             <div id="view-referencias" class="doc-content-text">Nenhuma referência informada.</div>
           </div>
 
@@ -831,6 +1042,7 @@
       Criado por <a href="https://www.instagram.com/adauri.bispo.silva/" target="_blank" rel="noopener">@Adauri.Bispo.Silva</a> · Instagram
     </footer>
 
+    <!-- MODAL INFORMATIVO PEDAGÓGICO -->
     <div id="modal-info" class="modal-backdrop no-print">
       <div class="modal-card">
         <div class="modal-title">
@@ -846,6 +1058,7 @@
 
   </div>
 
+  <!-- LÓGICA JAVASCRIPT PURA -->
   <script>
     const dicasPedagogicas = {
       diagnostico: {
@@ -853,8 +1066,8 @@
         conteudo: '<b>Paulo Freire (Pedagogia da Autonomia):</b> "A leitura do mundo precede a leitura da palavra."<br><br>Antes de introduzir conteúdos sistematizados, investigue a realidade concreta dos estudantes, seus saberes de experiência feitos e o contexto socioeconômico da comunidade escolar.'
       },
       objetivos: {
-        titulo: 'Formulação de Objetivos Ativos',
-        conteudo: '<b>Regina Barros Leal & Prof. Paulo Gomes Lima:</b> Inicie os objetivos específicos sempre com <b>verbos no infinitivo</b> (ex: <i>Analisar, Compreender, Sintetizar, Formular</i>).<br><br>Garanta o equilíbrio entre as três dimensões: Conceitual (Saber), Procedimental (Saber Fazer) e Atitudinal (Ser/Conviver).'
+        titulo: 'Formulação de Objetivos Ativos (3 Dimensões)',
+        conteudo: '<b>Regina Barros Leal & Prof. Paulo Gomes Lima:</b> Inicie os objetivos específicos sempre com <b>verbos no infinitivo</b>.<br><br>Garanta o equilíbrio entre as três dimensões:<br>• <b>Conceitual:</b> Domínio de conceitos e teorias (ex: <i>Analisar, Conceituar</i>).<br>• <b>Procedimental:</b> Domínio de métodos e aplicação prática (ex: <i>Formular, Elaborar</i>).<br>• <b>Atitudinal:</b> Valores éticos e cidadania (ex: <i>Refletir, Valorizar</i>).'
       },
       conteudos: {
         titulo: 'Seleção Crítica de Conteúdos',
@@ -862,7 +1075,7 @@
       },
       metodologia: {
         titulo: 'Encaminhamentos Dialógicos (Práxis)',
-        conteudo: '<b>Selma Garrido Pimenta & Paulo Freire:</b> "Ensinar não é transferir conhecimento, mas criar as possibilidades para a sua produção."<br><br>Organize a aula nos 4 momentos didáticos: 1. Sensibilização/Problematização; 2. Construção Dialógica; 3. Prática Colaborativa; 4. Síntese/Fechamento.'
+        conteudo: '<b>Selma Garrido Pimenta & Paulo Freire:</b> "Ensinar não é transferir conhecimento, mas criar as possibilidades para a sua produção."<br><br>Organize a aula nos 4 momentos didáticos indicando o tempo em minutos:<br>1. Sensibilização/Problematização;<br>2. Construção Dialógica;<br>3. Prática Colaborativa;<br>4. Síntese/Fechamento.'
       },
       recursos: {
         titulo: 'Recursos Didáticos e Tecnologia (NTIC)',
@@ -870,11 +1083,15 @@
       },
       avaliacao: {
         titulo: 'Avaliação Diagnóstica e Formativa',
-        conteudo: '<b>Cipriano Luckesi & Celso Vasconcelos:</b> A avaliação formativa é um "ato de amor" e acolhimento. Seu objetivo é diagnosticar o ponto atual do aluno para ajudá-lo a superar dificuldades, sem caráter punitivo ou classificatório.'
+        conteudo: '<b>Cipriano Luckesi & Celso Vasconcelos:</b> A avaliação formativa é um "ato de amor" e acolhimento. Separe claramente:<br>• <b>Critérios:</b> O que avaliar nas 3 dimensões.<br>• <b>Instrumentos:</b> Ferramentas concretas (observação, diário, rubrica, portfólio).'
+      },
+      diario: {
+        titulo: 'Diário de Bordo Pós-Aula (Professor Reflexivo)',
+        conteudo: '<b>Selma Garrido Pimenta & Schön:</b> A identidade profissional se constrói na reflexão sobre a própria prática. Utilize este espaço após a aula para registrar o que funcionou bem, quais dúvidas surgiram e o que precisa ser ajustado na próxima aula.'
       }
     };
 
-    const campos = ['instituicao', 'disciplina', 'turma', 'docente', 'duracao', 'diagnostico', 'objetivoGeral', 'objetivosEspecificos', 'conteudos', 'metodologia', 'recursos', 'avaliacao', 'referencias'];
+    const campos = ['instituicao', 'disciplina', 'turma', 'docente', 'duracao', 'eixoTematico', 'diagnostico', 'objetivoGeral', 'objConceitual', 'objProcedimental', 'objAtitudinal', 'conteudoConceitual', 'conteudoProcedimental', 'conteudoAtitudinal', 'metodoMomento1', 'metodoMomento2', 'metodoMomento3', 'metodoMomento4', 'recursos', 'anexos', 'avaliacaoCriterios', 'avaliacaoInstrumentos', 'diarioBordo', 'referencias'];
 
     function mudarAba(nomeAba) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -888,14 +1105,16 @@
       }
     }
 
-    function inserirVerbo(verbo) {
-      const el = document.getElementById('form-objetivosEspecificos');
-      if (el.value.trim() !== '') {
-        el.value += '\n- ' + verbo + ' ';
-      } else {
-        el.value = '- ' + verbo + ' ';
+    function inserirVerboCampo(idCampo, verbo) {
+      const el = document.getElementById(idCampo);
+      if (el) {
+        if (el.value.trim() !== '') {
+          el.value += '\n- ' + verbo + ' ';
+        } else {
+          el.value = '- ' + verbo + ' ';
+        }
+        salvarDados();
       }
-      salvarDados();
     }
 
     function salvarDados() {
@@ -905,7 +1124,7 @@
         if (el) dados[campo] = el.value;
       });
       try {
-        localStorage.setItem('plano_aula_dados', JSON.stringify(dados));
+        localStorage.setItem('plano_aula_dados_completo', JSON.stringify(dados));
       } catch(e) {
         console.error(e);
       }
@@ -914,7 +1133,7 @@
     function carregarDados() {
       let salvos = null;
       try {
-        salvos = localStorage.getItem('plano_aula_dados');
+        salvos = localStorage.getItem('plano_aula_dados_completo');
       } catch(e) {
         console.error(e);
       }
@@ -940,7 +1159,7 @@
           if (el) el.value = '';
         });
         try {
-          localStorage.removeItem('plano_aula_dados');
+          localStorage.removeItem('plano_aula_dados_completo');
         } catch(e) {
           console.error(e);
         }
@@ -960,20 +1179,37 @@
       document.getElementById('view-docente').innerText = getVal('docente', 'Não informado');
       document.getElementById('view-turma').innerText = getVal('turma', 'Não informada');
       document.getElementById('view-duracao').innerText = getVal('duracao', 'Não informada');
+      document.getElementById('view-eixoTematico').innerText = getVal('eixoTematico', 'Não informado');
 
       document.getElementById('view-diagnostico').innerText = getVal('diagnostico', 'Nenhum diagnóstico informado.');
       document.getElementById('view-objetivoGeral').innerText = getVal('objetivoGeral', 'Não especificado.');
-      document.getElementById('view-objetivosEspecificos').innerText = getVal('objetivosEspecificos', 'Não especificados.');
-      document.getElementById('view-conteudos').innerText = getVal('conteudos', 'Nenhum conteúdo informado.');
-      document.getElementById('view-metodologia').innerText = getVal('metodologia', 'Nenhuma metodologia informada.');
-      document.getElementById('view-recursos').innerText = getVal('recursos', 'Nenhum recurso informado.');
-      document.getElementById('view-avaliacao').innerText = getVal('avaliacao', 'Nenhum critério de avaliação informado.');
+      
+      document.getElementById('view-objConceitual').innerText = getVal('objConceitual', 'Não informado.');
+      document.getElementById('view-objProcedimental').innerText = getVal('objProcedimental', 'Não informado.');
+      document.getElementById('view-objAtitudinal').innerText = getVal('objAtitudinal', 'Não informado.');
+
+      document.getElementById('view-conteudoConceitual').innerText = getVal('conteudoConceitual', 'Não informado.');
+      document.getElementById('view-conteudoProcedimental').innerText = getVal('conteudoProcedimental', 'Não informado.');
+      document.getElementById('view-conteudoAtitudinal').innerText = getVal('conteudoAtitudinal', 'Não informado.');
+
+      document.getElementById('view-metodoMomento1').innerText = getVal('metodoMomento1', 'Não informado.');
+      document.getElementById('view-metodoMomento2').innerText = getVal('metodoMomento2', 'Não informado.');
+      document.getElementById('view-metodoMomento3').innerText = getVal('metodoMomento3', 'Não informado.');
+      document.getElementById('view-metodoMomento4').innerText = getVal('metodoMomento4', 'Não informado.');
+
+      document.getElementById('view-recursos').innerText = getVal('recursos', 'Não informados.');
+      document.getElementById('view-anexos').innerText = getVal('anexos', 'Não informados.');
+
+      document.getElementById('view-avaliacaoCriterios').innerText = getVal('avaliacaoCriterios', 'Não informados.');
+      document.getElementById('view-avaliacaoInstrumentos').innerText = getVal('avaliacaoInstrumentos', 'Não informados.');
+
+      document.getElementById('view-diarioBordo').innerText = getVal('diarioBordo', 'A ser preenchido pelo docente após a regência.');
       document.getElementById('view-referencias').innerText = getVal('referencias', 'Nenhuma referência informada.');
     }
 
     function alternarModoEdicao() {
       const ativo = document.getElementById('toggle-edicao').checked;
-      const idsEditaveis = ['view-diagnostico', 'view-objetivoGeral', 'view-objetivosEspecificos', 'view-conteudos', 'view-metodologia', 'view-recursos', 'view-avaliacao', 'view-referencias'];
+      const idsEditaveis = ['view-diagnostico', 'view-objetivoGeral', 'view-objConceitual', 'view-objProcedimental', 'view-objAtitudinal', 'view-conteudoConceitual', 'view-conteudoProcedimental', 'view-conteudoAtitudinal', 'view-metodoMomento1', 'view-metodoMomento2', 'view-metodoMomento3', 'view-metodoMomento4', 'view-recursos', 'view-anexos', 'view-avaliacaoCriterios', 'view-avaliacaoInstrumentos', 'view-diarioBordo', 'view-referencias'];
       
       idsEditaveis.forEach(id => {
         const el = document.getElementById(id);
@@ -998,7 +1234,7 @@
       document.getElementById('modal-info').classList.remove('active');
     }
 
-    // Ajusta a posição das abas à altura real do cabeçalho (que agora tem a linha de crédito)
+    // Ajusta a posição das abas à altura real do cabeçalho (que tem a linha de crédito)
     function ajustarAbas() {
       const header = document.querySelector('header');
       const nav = document.querySelector('nav.tabs-nav');
