@@ -444,44 +444,155 @@
       cursor: pointer;
     }
 
-    /* REGRAS DE IMPRESSÃO ABNT */
+    /* CRÉDITOS */
+    .brand-credit a,
+    .app-footer a {
+      color: inherit;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .brand-credit a:hover,
+    .app-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .app-footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 14px 16px 20px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .app-footer a {
+      color: var(--primary);
+    }
+
+    /* REGRAS DE IMPRESSÃO ABNT (NBR 14724)
+       Papel A4 | Margens: superior 3 cm, esquerda 3 cm, inferior 2 cm, direita 2 cm
+       Fonte 12 pt | Espaçamento 1,5 | Recuo de parágrafo 1,25 cm
+       As margens são definidas em @page, por isso valem em TODAS as páginas. */
+    @page {
+      size: A4 portrait;
+      margin: 3cm 2cm 2cm 3cm;
+    }
+
     @media print {
-      body * {
-        visibility: hidden;
-      }
-      #area-impressao-abnt, #area-impressao-abnt * {
-        visibility: visible;
-      }
-      #area-impressao-abnt {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0;
-        padding: 3cm 2cm 2cm 3cm !important;
-        font-family: 'Arial', 'Times New Roman', serif !important;
-        font-size: 12pt !important;
-        line-height: 1.5 !important;
-        color: #000000 !important;
+      html, body {
         background: #ffffff !important;
-        box-shadow: none !important;
-        border: none !important;
+        width: auto !important;
+        min-height: 0 !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
-      .no-print {
+
+      #app-container {
+        max-width: none !important;
+        width: auto !important;
+        min-height: 0 !important;
+        box-shadow: none !important;
+        display: block !important;
+      }
+
+      main.content-area {
+        padding: 0 !important;
+      }
+
+      .no-print,
+      header,
+      nav.tabs-nav,
+      #tab-insumos,
+      .app-footer,
+      .modal-backdrop {
         display: none !important;
       }
-      .doc-header-title {
-        font-size: 13pt !important;
-        margin-bottom: 2rem !important;
+
+      /* Garante que o plano seja impresso mesmo se a aba "Insumos" estiver aberta */
+      #tab-plano {
+        display: block !important;
       }
+
+      #area-impressao-abnt {
+        position: static !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: Arial, Helvetica, 'Times New Roman', serif !important;
+        font-size: 12pt !important;
+        line-height: 1.5 !important;
+      }
+
+      #area-impressao-abnt * {
+        font-family: Arial, Helvetica, 'Times New Roman', serif !important;
+        color: #000000 !important;
+      }
+
+      .doc-header-title {
+        font-size: 12pt !important;
+        font-weight: 700 !important;
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
+        margin-bottom: 1.5em !important;
+      }
+
+      .doc-header-title div {
+        font-size: 12pt !important;
+      }
+
+      .doc-meta-grid {
+        font-size: 12pt !important;
+        border-bottom: none !important;
+        gap: 0 1.5em !important;
+        margin-bottom: 1.5em !important;
+        padding-bottom: 0 !important;
+      }
+
+      .doc-section {
+        margin-bottom: 1.5em !important;
+        page-break-inside: auto;
+      }
+
       .doc-section-title {
         font-size: 12pt !important;
-        margin-bottom: 0.4rem !important;
+        font-weight: 700 !important;
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
+        margin-bottom: 0.5em !important;
+        page-break-after: avoid;
+        break-after: avoid;
       }
+
       .doc-content-text {
         font-size: 12pt !important;
-        text-indent: 1.25cm !important;
         line-height: 1.5 !important;
+        text-align: justify !important;
+        text-indent: 1.25cm !important;
+        orphans: 2;
+        widows: 2;
+      }
+
+      /* Remove o visual do "Modo Edição Direta" na impressão */
+      [contenteditable] {
+        border: none !important;
+        padding: 0 !important;
+        background: transparent !important;
+      }
+
+      /* Referências ABNT (NBR 6023): espaço simples, alinhadas à esquerda, sem recuo */
+      #view-referencias {
+        line-height: 1.0 !important;
+        text-align: left !important;
+        text-indent: 0 !important;
       }
     }
   </style>
@@ -497,6 +608,7 @@
           <span>PlanoAção Pedagógico</span>
         </div>
         <div class="brand-subtitle">Prática Autônoma & Didática Crítica</div>
+        <div class="brand-subtitle brand-credit">Criado por <a href="https://www.instagram.com/adauri.bispo.silva/" target="_blank" rel="noopener">@Adauri.Bispo.Silva</a></div>
       </div>
       <button onclick="limparFormulario()" class="btn-clear">Limpar</button>
     </header>
@@ -586,7 +698,7 @@
             </div>
           </div>
 
-          <textarea id="form-objetivosEspecificos" oninput="salvarDados()" placeholder="Ex: - Analisar as etapas do plano de ensino;&#n- Refletir sobre a avaliação formativa;"></textarea>
+          <textarea id="form-objetivosEspecificos" oninput="salvarDados()" placeholder="Ex: - Analisar as etapas do plano de ensino;&#10;- Refletir sobre a avaliação formativa;"></textarea>
         </fieldset>
 
         <fieldset class="form-group-card">
@@ -595,7 +707,7 @@
             <button onclick="abrirModal('conteudos')" class="btn-info-modal">❓ Mais Informações</button>
           </div>
           <div class="input-subtext">Saberes conceituais, procedimentais e atitudinais (ética, cidadania, direitos humanos).</div>
-          <textarea id="form-conteudos" oninput="salvarDados()" placeholder="Ex: 1. O papel da Didática Crítica;&#n2. Etapas do Planejamento;\n3. Ética e Autonomia na docência."></textarea>
+          <textarea id="form-conteudos" oninput="salvarDados()" placeholder="Ex: 1. O papel da Didática Crítica;&#10;2. Etapas do Planejamento;&#10;3. Ética e Autonomia na docência."></textarea>
         </fieldset>
 
         <fieldset class="form-group-card">
@@ -604,7 +716,7 @@
             <button onclick="abrirModal('metodologia')" class="btn-info-modal">❓ Mais Informações</button>
           </div>
           <div class="input-subtext">Sequência didática: Sensibilização/Problematização, Construção Dialógica, Prática Colaborativa e Síntese.</div>
-          <textarea id="form-metodologia" oninput="salvarDados()" placeholder="Ex: 1. Abertura com pergunta provocadora no quadro;\n2. Leitura orientada e discussão em pequenos grupos;\n3. Roda de conversa para síntese coletiva."></textarea>
+          <textarea id="form-metodologia" oninput="salvarDados()" placeholder="Ex: 1. Abertura com pergunta provocadora no quadro;&#10;2. Leitura orientada e discussão em pequenos grupos;&#10;3. Roda de conversa para síntese coletiva."></textarea>
         </fieldset>
 
         <fieldset class="form-group-card">
@@ -669,4 +781,236 @@
           </div>
 
           <div class="doc-section">
- 
+            <div class="doc-section-title">1. DIAGNÓSTICO E CONTEXTO DA TURMA</div>
+            <div id="view-diagnostico" class="doc-content-text">Nenhum diagnóstico informado.</div>
+          </div>
+
+          <div class="doc-section">
+            <div class="doc-section-title">2. OBJETIVOS DE APRENDIZAGEM</div>
+            <div style="margin-bottom: 6px;" class="doc-content-text">
+              <strong>Objetivo Geral:</strong> <span id="view-objetivoGeral">Não especificado.</span>
+            </div>
+            <div class="doc-content-text">
+              <strong>Objetivos Específicos:</strong>
+              <div id="view-objetivosEspecificos" style="margin-top: 4px;">Não especificados.</div>
+            </div>
+          </div>
+
+          <div class="doc-section">
+            <div class="doc-section-title">3. CONTEÚDOS PROGRAMÁTICOS</div>
+            <div id="view-conteudos" class="doc-content-text">Nenhum conteúdo informado.</div>
+          </div>
+
+          <div class="doc-section">
+            <div class="doc-section-title">4. ENCAMINHAMENTOS METODOLÓGICOS</div>
+            <div id="view-metodologia" class="doc-content-text">Nenhuma metodologia informada.</div>
+          </div>
+
+          <div class="doc-section">
+            <div class="doc-section-title">5. RECURSOS DIDÁTICOS</div>
+            <div id="view-recursos" class="doc-content-text">Nenhum recurso informado.</div>
+          </div>
+
+          <div class="doc-section">
+            <div class="doc-section-title">6. AVALIAÇÃO DIAGNÓSTICA E FORMATIVA</div>
+            <div id="view-avaliacao" class="doc-content-text">Nenhum critério de avaliação informado.</div>
+          </div>
+
+          <div class="doc-section">
+            <div class="doc-section-title">7. REFERÊNCIAS BIBLIOGRÁFICAS</div>
+            <div id="view-referencias" class="doc-content-text">Nenhuma referência informada.</div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+    <footer class="app-footer no-print">
+      Criado por <a href="https://www.instagram.com/adauri.bispo.silva/" target="_blank" rel="noopener">@Adauri.Bispo.Silva</a> · Instagram
+    </footer>
+
+    <div id="modal-info" class="modal-backdrop no-print">
+      <div class="modal-card">
+        <div class="modal-title">
+          <span>💡</span>
+          <span id="modal-title-text">Orientação Pedagógica</span>
+        </div>
+        <div id="modal-body-text" class="modal-body">
+          Conteúdo explicativo...
+        </div>
+        <button onclick="fecharModal()" class="btn-modal-close">Entendi / Voltar ao Plano</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const dicasPedagogicas = {
+      diagnostico: {
+        titulo: 'Leitura de Mundo e Diagnóstico',
+        conteudo: '<b>Paulo Freire (Pedagogia da Autonomia):</b> "A leitura do mundo precede a leitura da palavra."<br><br>Antes de introduzir conteúdos sistematizados, investigue a realidade concreta dos estudantes, seus saberes de experiência feitos e o contexto socioeconômico da comunidade escolar.'
+      },
+      objetivos: {
+        titulo: 'Formulação de Objetivos Ativos',
+        conteudo: '<b>Regina Barros Leal & Prof. Paulo Gomes Lima:</b> Inicie os objetivos específicos sempre com <b>verbos no infinitivo</b> (ex: <i>Analisar, Compreender, Sintetizar, Formular</i>).<br><br>Garanta o equilíbrio entre as três dimensões: Conceitual (Saber), Procedimental (Saber Fazer) e Atitudinal (Ser/Conviver).'
+      },
+      conteudos: {
+        titulo: 'Seleção Crítica de Conteúdos',
+        conteudo: '<b>Cipriano Luckesi:</b> O conteúdo não é um fim em si mesmo. Selecione saberes científicos articulados com temas transversais (ética, cidadania, direitos humanos) para a emancipação do sujeito.'
+      },
+      metodologia: {
+        titulo: 'Encaminhamentos Dialógicos (Práxis)',
+        conteudo: '<b>Selma Garrido Pimenta & Paulo Freire:</b> "Ensinar não é transferir conhecimento, mas criar as possibilidades para a sua produção."<br><br>Organize a aula nos 4 momentos didáticos: 1. Sensibilização/Problematização; 2. Construção Dialógica; 3. Prática Colaborativa; 4. Síntese/Fechamento.'
+      },
+      recursos: {
+        titulo: 'Recursos Didáticos e Tecnologia (NTIC)',
+        conteudo: 'Utilize tecnologias e materiais concretos como meios mediadores para instigar a curiosidade epistemológica e promover a passagem da curiosidade ingênua para a crítica.'
+      },
+      avaliacao: {
+        titulo: 'Avaliação Diagnóstica e Formativa',
+        conteudo: '<b>Cipriano Luckesi & Celso Vasconcelos:</b> A avaliação formativa é um "ato de amor" e acolhimento. Seu objetivo é diagnosticar o ponto atual do aluno para ajudá-lo a superar dificuldades, sem caráter punitivo ou classificatório.'
+      }
+    };
+
+    const campos = ['instituicao', 'disciplina', 'turma', 'docente', 'duracao', 'diagnostico', 'objetivoGeral', 'objetivosEspecificos', 'conteudos', 'metodologia', 'recursos', 'avaliacao', 'referencias'];
+
+    function mudarAba(nomeAba) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      document.getElementById('tab-btn-' + nomeAba).classList.add('active');
+      document.getElementById('tab-' + nomeAba).classList.add('active');
+
+      if (nomeAba === 'plano') {
+        atualizarVisualizacaoPlano();
+      }
+    }
+
+    function inserirVerbo(verbo) {
+      const el = document.getElementById('form-objetivosEspecificos');
+      if (el.value.trim() !== '') {
+        el.value += '\n- ' + verbo + ' ';
+      } else {
+        el.value = '- ' + verbo + ' ';
+      }
+      salvarDados();
+    }
+
+    function salvarDados() {
+      const dados = {};
+      campos.forEach(campo => {
+        const el = document.getElementById('form-' + campo);
+        if (el) dados[campo] = el.value;
+      });
+      try {
+        localStorage.setItem('plano_aula_dados', JSON.stringify(dados));
+      } catch(e) {
+        console.error(e);
+      }
+    }
+
+    function carregarDados() {
+      let salvos = null;
+      try {
+        salvos = localStorage.getItem('plano_aula_dados');
+      } catch(e) {
+        console.error(e);
+      }
+      if (salvos) {
+        try {
+          const dados = JSON.parse(salvos);
+          campos.forEach(campo => {
+            const el = document.getElementById('form-' + campo);
+            if (el && dados[campo] !== undefined) {
+              el.value = dados[campo];
+            }
+          });
+        } catch(e) {
+          console.error(e);
+        }
+      }
+    }
+
+    function limparFormulario() {
+      if (confirm('Deseja realmente limpar todos os campos do plano de aula?')) {
+        campos.forEach(campo => {
+          const el = document.getElementById('form-' + campo);
+          if (el) el.value = '';
+        });
+        try {
+          localStorage.removeItem('plano_aula_dados');
+        } catch(e) {
+          console.error(e);
+        }
+        atualizarVisualizacaoPlano();
+      }
+    }
+
+    function atualizarVisualizacaoPlano() {
+      const getVal = (id, fallback) => {
+        const el = document.getElementById('form-' + id);
+        return (el && el.value.trim() !== '') ? el.value : fallback;
+      };
+
+      document.getElementById('view-instituicao').innerText = getVal('instituicao', 'NOME DA INSTITUIÇÃO DE ENSINO');
+      document.getElementById('view-disciplina-title').innerText = getVal('disciplina', 'COMPONENTE CURRICULAR').toUpperCase();
+      document.getElementById('view-disciplina').innerText = getVal('disciplina', 'Não informado');
+      document.getElementById('view-docente').innerText = getVal('docente', 'Não informado');
+      document.getElementById('view-turma').innerText = getVal('turma', 'Não informada');
+      document.getElementById('view-duracao').innerText = getVal('duracao', 'Não informada');
+
+      document.getElementById('view-diagnostico').innerText = getVal('diagnostico', 'Nenhum diagnóstico informado.');
+      document.getElementById('view-objetivoGeral').innerText = getVal('objetivoGeral', 'Não especificado.');
+      document.getElementById('view-objetivosEspecificos').innerText = getVal('objetivosEspecificos', 'Não especificados.');
+      document.getElementById('view-conteudos').innerText = getVal('conteudos', 'Nenhum conteúdo informado.');
+      document.getElementById('view-metodologia').innerText = getVal('metodologia', 'Nenhuma metodologia informada.');
+      document.getElementById('view-recursos').innerText = getVal('recursos', 'Nenhum recurso informado.');
+      document.getElementById('view-avaliacao').innerText = getVal('avaliacao', 'Nenhum critério de avaliação informado.');
+      document.getElementById('view-referencias').innerText = getVal('referencias', 'Nenhuma referência informada.');
+    }
+
+    function alternarModoEdicao() {
+      const ativo = document.getElementById('toggle-edicao').checked;
+      const idsEditaveis = ['view-diagnostico', 'view-objetivoGeral', 'view-objetivosEspecificos', 'view-conteudos', 'view-metodologia', 'view-recursos', 'view-avaliacao', 'view-referencias'];
+      
+      idsEditaveis.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.contentEditable = ativo ? "true" : "false";
+          el.style.border = ativo ? "1px dashed #4338ca" : "none";
+          el.style.padding = ativo ? "4px" : "0";
+          el.style.backgroundColor = ativo ? "#f5f3ff" : "transparent";
+        }
+      });
+    }
+
+    function abrirModal(chave) {
+      if (dicasPedagogicas[chave]) {
+        document.getElementById('modal-title-text').innerText = dicasPedagogicas[chave].titulo;
+        document.getElementById('modal-body-text').innerHTML = dicasPedagogicas[chave].conteudo;
+        document.getElementById('modal-info').classList.add('active');
+      }
+    }
+
+    function fecharModal() {
+      document.getElementById('modal-info').classList.remove('active');
+    }
+
+    // Ajusta a posição das abas à altura real do cabeçalho (que agora tem a linha de crédito)
+    function ajustarAbas() {
+      const header = document.querySelector('header');
+      const nav = document.querySelector('nav.tabs-nav');
+      if (header && nav) nav.style.top = header.offsetHeight + 'px';
+    }
+
+    window.addEventListener('resize', ajustarAbas);
+
+    window.onload = function() {
+      carregarDados();
+      ajustarAbas();
+    };
+  </script>
+</body>
+</html>
