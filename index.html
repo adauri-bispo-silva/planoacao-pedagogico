@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlanoAção Pedagógico - Gerador de Plano de Aula</title>
+  <style>
+    /* ESTILOS CSS GERAIS (100% EMBUTIDOS - ZERO DEPENDÊNCIAS EXTERNAS) */
+    :root {
+      --primary: #4338ca;
+      --primary-dark: #3730a3;
+      --primary-light: #e0e7ff;
+      --primary-text: #312e81;
+      --accent: #059669;
+      --accent-dark: #047857;
+      --bg-body: #f1f5f9;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #cbd5e1;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    #app-container {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--bg-card);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 14px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .brand-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.72rem;
+      color: #c7d2fe;
+      font-weight: 400;
+    }
+
+    .btn-clear {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-clear:hover {
+      background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    nav.tabs-nav {
+      display: flex;
+      background-color: #f8fafc;
+      border-bottom: 2px solid #e2e8f0;
+      position: sticky;
+      top: 57px;
+      z-index: 90;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border: none;
+      background: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background-color: white;
+    }
+
+    main.content-area {
+      padding: 16px;
+      flex: 1;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .info-banner {
+      background-color: var(--primary-light);
+      border: 1px solid #c7d2fe;
+      border-radius: var(--radius);
+      padding: 12px;
+      font-size: 0.8rem;
+      color: var(--primary-text);
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .form-group-card {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 16px;
+      background-color: #fafafa;
+    }
+
+    .card-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--primary);
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-info-modal {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background-color: #e0e7ff;
+    }
+
+    .btn-info-modal:hover {
+      background-color: #c7d2fe;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 4px;
+      margin-top: 8px;
+    }
+
+    .input-subtext {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      color: var(--text-main);
+      background-color: white;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.15);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .grid-2-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .verb-assistant {
+      background-color: #eef2ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+
+    .verb-assistant-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .verb-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .verb-chip {
+      background-color: white;
+      border: 1px solid #a5b4fc;
+      color: var(--primary-dark);
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+
+    .verb-chip:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-action-primary {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    .btn-action-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .action-bar-plano {
+      background-color: #1e293b;
+      color: white;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+
+    .btn-print {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-print:hover {
+      background-color: var(--accent-dark);
+    }
+
+    .document-preview {
+      background-color: white;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .doc-header-title {
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      border-bottom: 2px solid #000;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+
+    .doc-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 0.78rem;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .doc-section {
+      margin-bottom: 16px;
+    }
+
+    .doc-section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-bottom: 1px solid #94a3b8;
+      padding-bottom: 2px;
+      margin-bottom: 6px;
+      color: #0f172a;
+    }
+
+    .doc-content-text {
+      font-size: 0.82rem;
+      color: #334155;
+      white-space: pre-line;
+      text-align: justify;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 200;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background-color: white;
+      border-radius: 16px;
+      max-width: 400px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-body {
+      font-size: 0.82rem;
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .btn-modal-close {
+      width: 100%;
+      padding: 10px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    /* REGRAS DE IMPRESSÃO ABNT */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #area-impressao-abnt, #area-impressao-abnt * {
+        visibility: visible;
+      }
+      #area-impressao-abnt {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 3cm 2cm 2cm 3cm !important;
+        font-family: 'Arial', 'Times New Roman', serif !important;
+        font-size: 12pt !important;
+        line-height: 1.5 !important;
+        color: #000000 !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .doc-header-title {
+        font-size: 13pt !important;
+        margin-bottom: 2rem !important;
+      }
+      .doc-section-title {
+        font-size: 12pt !important;
+        margin-bottom: 0.4rem !important;
+      }
+      .doc-content-text {
+        font-size: 12pt !important;
+        text-indent: 1.25cm !important;
+        line-height: 1.5 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-container">
+
+    <header class="no-print">
+      <div>
+        <div class="brand-title">
+          <span>📖</span>
+          <span>PlanoAção Pedagógico</span>
+        </div>
+        <div class="brand-subtitle">Prática Autônoma & Didática Crítica</div>
+      </div>
+      <button onclick="limparFormulario()" class="btn-clear">Limpar</button>
+    </header>
+
+    <nav class="tabs-nav no-print">
+      <button id="tab-btn-insumos" onclick="mudarAba('insumos')" class="tab-btn active">
+        <span>✏️</span>
+        <span>1. Insumos</span>
+      </button>
+      <button id="tab-btn-plano" onclick="mudarAba('plano')" class="tab-btn">
+        <span>📄</span>
+        <span>2. Plano de Aula</span>
+      </button>
+    </nav>
+
+    <main class="content-area">
+
+      <section id="tab-insumos" class="tab-content active no-print">
+        
+        <div class="info-banner">
+          <span style="font-size: 1.2rem;">💡</span>
+          <div>Responda às questões organizadas para estruturar um plano de aula reflexivo e fundamentado na Didática Crítica (Paulo Freire, Luckesi, Pimenta e Leal).</div>
+        </div>
+
+        <fieldset class="form-group-card">
+          <div class="card-header-flex">
+            <span class="card-title">📌 1. Cabeçalho Institucional</span>
+          </div>
+
+          <label class="input-label">Instituição de Ensino</label>
+          <input type="text" id="form-instituicao" oninput="salvarDados()" placeholder="Ex: Escola Estadual Paulo Freire">
+
+          <div class="grid-2-cols">
+            <div>
+              <label class="input-label">Componente Curricular</label>
+              <input type="text" id="form-disciplina" oninput="salvarDados()" placeholder="Ex: Didática Geral">
+            </div>
+            <div>
+              <label class="input-label">Turma / Etapa</label>
+              <input type="text" id="form-turma" oninput="salvarDados()" placeholder="Ex: 3º Ano B">
+            </div>
+          </div>
+
+          <div class="grid-2-cols">
+            <div>
+              <label class="input-label">Docente(s)</label>
+              <input type="text" id="form-docente" oninput="salvarDados()" placeholder="Seu nome">
+            </div>
+            <div>
+              <label class="input-label">Duração / Data</label>
+              <input type="text" id="form-duracao" oninput="salvarDados()" placeholder="Ex: 2h/aula - 27/10">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-group-card">
+          <div class="card-header-flex">
+            <span class="card-title">👥 2. Diagnóstico & Contexto</span>
+            <button onclick="abrirModal('diagnostico')" class="btn-info-modal">❓ Mais Informações</button>
+          </div>
+          <div class="input-subtext">Qual o perfil sociocultural dos estudantes e quais saberes de experiência prévios eles trazem?</div>
+          <textarea id="form-diagnostico" oninput="salvarDados()" placeholder="Descreva o contexto dos alunos, suas vivências comunitárias e necessidades de apoio pedagógico..."></textarea>
+        </fieldset>
+
+        <fieldset class="form-group-card">
+          <div class="card-header-flex">
+            <span class="card-title">🎯 3. Objetivos de Aprendizagem</span>
+            <button onclick="abrirModal('objetivos')" class="btn-info-modal">❓ Mais Informações</button>
+          </div>
+
+          <label class="input-label">Objetivo Geral (Longo Prazo)</label>
+          <input type="text" id="form-objetivoGeral" oninput="salvarDados()" placeholder="Ex: Compreender o planejamento de ensino como ato político-pedagógico...">
+
+          <label class="input-label">Objetivos Específicos (Com Verbos Ativos no Infinitivo)</label>
+          
+          <div class="verb-assistant">
+            <span class="verb-assistant-title">Assistente de Verbos no Infinitivo (Clique para inserir):</span>
+            <div class="verb-chips">
+              <span class="verb-chip" onclick="inserirVerbo('Analisar')">+ Analisar</span>
+              <span class="verb-chip" onclick="inserirVerbo('Compreender')">+ Compreender</span>
+              <span class="verb-chip" onclick="inserirVerbo('Refletir')">+ Refletir</span>
+              <span class="verb-chip" onclick="inserirVerbo('Formular')">+ Formular</span>
+              <span class="verb-chip" onclick="inserirVerbo('Investigar')">+ Investigar</span>
+              <span class="verb-chip" onclick="inserirVerbo('Sintetizar')">+ Sintetizar</span>
+              <span class="verb-chip" onclick="inserirVerbo('Debater')">+ Debater</span>
+              <span class="verb-chip" onclick="inserirVerbo('Valorizar')">+ Valorizar</span>
+            </div>
+          </div>
+
+          <textarea id="form-objetivosEspecificos" oninput="salvarDados()" placeholder="Ex: - Analisar as etapas do plano de ensino;&#n- Refletir sobre a avaliação formativa;"></textarea>
+        </fieldset>
+
+        <fieldset class="form-group-card">
+          <div class="card-header-flex">
+            <span class="card-title">📚 4. Conteúdos Programáticos</span>
+            <button onclick="abrirModal('conteudos')" class="btn-info-modal">❓ Mais Informações</button>
+          </div>
+          <div class="input-subtext">Saberes conceituais, procedimentais e atitudinais (ética, cidadania, direitos humanos).</div>
+          <textarea id="form-conteudos" oninput="salvarDados()" placeholder="Ex: 1. O papel da Didática Crítica;&#n2. Etapas do Planejamento;\n3. Ética e Autonomia na docência."></textarea>
+        </fieldset>
+
+        <fieldset class="form-group-card">
+          <div class="card-header-flex">
+            <span class="card-title">🗺️ 5. Encaminhamentos Metodológicos</span>
+            <button onclick="abrirModal('metodologia')" class="btn-info-modal">❓ Mais Informações</button>
+          </div>
+          <div class="input-subtext">Sequência didática: Sensibilização/Problematização, Construção Dialógica, Prática Colaborativa e Síntese.</div>
+          <textarea id="form-metodologia" oninput="salvarDados()" placeholder="Ex: 1. Abertura com pergunta provocadora no quadro;\n2. Leitura orientada e discussão em pequenos grupos;\n3. Roda de conversa para síntese coletiva."></textarea>
+        </fieldset>
+
+        <fieldset class="form-group-card">
+          <div class="card-header-flex">
+            <span class="card-title">🖥️ 6. Recursos Didáticos & NTIC</span>
+            <button onclick="abrirModal('recursos')" class="btn-info-modal">❓ Mais Informações</button>
+          </div>
+          <input type="text" id="form-recursos" oninput="salvarDados()" placeholder="Ex: Quadro interativo, textos impressos, projeção, celulares para pesquisa...">
+        </fieldset>
+
+        <fieldset class="form-group-card">
+          <div class="card-header-flex">
+            <span class="card-title">📝 7. Avaliação Diagnóstica e Formativa</span>
+            <button onclick="abrirModal('avaliacao')" class="btn-info-modal">❓ Mais Informações</button>
+          </div>
+          <div class="input-subtext">Critérios de acompanhamento amoroso, inclusivo e não punitivo para superar dificuldades.</div>
+          <textarea id="form-avaliacao" oninput="salvarDados()" placeholder="Ex: Observação participante da interação nos grupos e análise da síntese reflexiva manuscrita..."></textarea>
+        </fieldset>
+
+        <fieldset class="form-group-card">
+          <div class="card-header-flex">
+            <span class="card-title">📖 8. Referências Bibliográficas</span>
+          </div>
+          <textarea id="form-referencias" oninput="salvarDados()" placeholder="Ex: FREIRE, Paulo. Pedagogia da Autonomia: saberes necessários à prática educativa. Rio de Janeiro: Paz e Terra, 1996."></textarea>
+        </fieldset>
+
+        <button onclick="mudarAba('plano')" class="btn-action-primary">
+          <span>Gerar e Visualizar Plano de Aula</span>
+          <span>➔</span>
+        </button>
+
+      </section>
+
+      <section id="tab-plano" class="tab-content">
+        
+        <div class="action-bar-plano no-print">
+          <label class="toggle-container">
+            <input type="checkbox" id="toggle-edicao" onchange="alternarModoEdicao()">
+            <span>Modo Edição Direta</span>
+          </label>
+
+          <button onclick="window.print()" class="btn-print">
+            <span>🖨️</span>
+            <span>Imprimir / PDF (ABNT)</span>
+          </button>
+        </div>
+
+        <div id="area-impressao-abnt" class="document-preview">
+          
+          <div class="doc-header-title">
+            <div id="view-instituicao">NOME DA INSTITUIÇÃO DE ENSINO</div>
+            <div style="font-size: 0.85rem; font-weight: 600; margin-top: 4px;">
+              PLANO DE AULA - <span id="view-disciplina-title">COMPONENTE CURRICULAR</span>
+            </div>
+          </div>
+
+          <div class="doc-meta-grid">
+            <div><strong>Docente:</strong> <span id="view-docente">Não informado</span></div>
+            <div><strong>Turma:</strong> <span id="view-turma">Não informada</span></div>
+            <div><strong>Duração/Data:</strong> <span id="view-duracao">Não informada</span></div>
+            <div><strong>Componente:</strong> <span id="view-disciplina">Não informado</span></div>
+          </div>
+
+          <div class="doc-section">
+ 
